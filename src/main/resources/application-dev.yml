@@ -1,0 +1,17 @@
+spring:
+  jpa:
+    show-sql: true
+  flyway:
+    clean-disabled: true
+
+logging:
+  level:
+    br.edu.ucsal.clima: DEBUG
+    org.flywaydb: INFO
+    org.springframework.security: INFO
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true

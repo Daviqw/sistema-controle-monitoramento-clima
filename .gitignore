@@ -1,0 +1,12 @@
+target/
+.idea/
+.vscode/
+*.iml
+.env
+.DS_Store
+.config-local.json
+
+node_modules/
+frontend/.angular/
+frontend/dist/
+bin/

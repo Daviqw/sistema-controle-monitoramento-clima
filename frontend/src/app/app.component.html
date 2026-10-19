@@ -1,34 +1,34 @@
 
     <div class="app-shell">
       <aside class="sidebar" *ngIf="loggedIn">
-        <div class="brand"><div class="brand-mark">☼</div><div><strong>CLIMA</strong><small>Monitoramento ambiental</small></div></div>
+        <div class="brand"><div><strong>CLIMA</strong><small>Gestão meteorológica</small></div></div>
         <div class="side-label">MENU PRINCIPAL</div>
-        <button class="nav-item" [class.active]="section==='dashboard'" (click)="section='dashboard'; loadDashboard()"><span>▦</span> Visão geral</button>
-        <button class="nav-item" (click)="section='usuarios'; loadUsers()" *ngIf="isAdmin"><span>♙</span> Usuários</button>
+        <button class="nav-item" [class.active]="section==='dashboard'" (click)="section='dashboard'; loadDashboard()">Visão geral</button>
+        <button class="nav-item" [class.active]="section==='usuarios'" (click)="section='usuarios'; loadUsers()" *ngIf="isAdmin">Usuários</button>
         <div class="side-label" *ngIf="isDecisor">CADASTROS</div>
-        <ng-container *ngIf="isAdmin"><button class="nav-item" *ngFor="let item of cadastros" (click)="openCadastro(item.key)">{{ item.label }}</button></ng-container><button class="nav-item" *ngIf="!isAdmin && isDecisor" (click)="openCadastro('estacoes')">Estações meteorológicas</button>
+        <ng-container *ngIf="isAdmin"><button class="nav-item" [class.active]="section==='cadastro' && cadastroKey===item.key" *ngFor="let item of cadastros" (click)="openCadastro(item.key)">{{ item.label }}</button></ng-container><button class="nav-item" [class.active]="section==='cadastro' && cadastroKey==='estacoes'" *ngIf="!isAdmin && isDecisor" (click)="openCadastro('estacoes')">Estações meteorológicas</button>
         <div class="side-label">SOLICITAÇÕES E RELATÓRIOS</div>
-        <button class="nav-item" (click)="openSolicitacoes('uso')">Uso de estações</button>
-        <button class="nav-item" (click)="openSolicitacoes('instalacao')">Instalações</button>
-        <button class="nav-item" (click)="section='relatorios'">Relatórios</button>
+        <button class="nav-item" [class.active]="section==='solicitacoes' && solicitacaoTipo==='uso'" (click)="openSolicitacoes('uso')">Uso de estações</button>
+        <button class="nav-item" [class.active]="section==='solicitacoes' && solicitacaoTipo==='instalacao'" (click)="openSolicitacoes('instalacao')">Instalações</button>
+        <button class="nav-item" [class.active]="section==='relatorios'" (click)="section='relatorios'">Relatórios</button>
         
         <button class="nav-item" *ngIf="isAdmin" [class.active]="section==='auditoria'" (click)="loadAudit()">Histórico de atividades</button>
-        <div class="sidebar-bottom"><div class="online-dot"></div> Gestão de estações</div>
+        
       </aside>
 
       <main class="main-area" [class.logged-out]="!loggedIn">
         <header class="topbar" *ngIf="loggedIn">
-          <div><span class="eyebrow">SISTEMA DE CONTROLE E MONITORAMENTO DO CLIMA</span><h1>{{ section === 'usuarios' ? 'Gestão de usuários' : section === 'cadastro' ? cadastroLabel : section === 'solicitacoes' ? 'Solicitações' : section === 'relatorios' ? 'Relatórios' : section === 'auditoria' ? 'Auditoria' : 'Visão geral' }}</h1></div>
-          <div class="profile"><div class="avatar">{{ (currentUser?.['nome'] || currentEmail || 'U').slice(0,1).toUpperCase() }}</div><div class="profile-text"><strong>{{ currentUser?.['nome'] || currentEmail }}</strong><small>{{ nomesPerfis(currentUser?.perfis || roles) }}</small></div><button class="logout" (click)="logout()" title="Sair">↪</button></div>
+          <div><h1>{{ section === 'usuarios' ? 'Gestão de usuários' : section === 'cadastro' ? cadastroLabel : section === 'solicitacoes' ? 'Solicitações' : section === 'relatorios' ? 'Relatórios' : section === 'auditoria' ? 'Auditoria' : 'Visão geral' }}</h1></div>
+          <div class="profile"><div class="profile-text"><strong>{{ currentUser?.['nome'] || currentEmail }}</strong><small>{{ nomesPerfis(currentUser?.perfis || roles) }}</small></div><button class="logout" (click)="logout()" title="Sair">Sair</button></div>
         </header>
 
         <section class="login-wrap" *ngIf="!loggedIn">
-          <div class="login-decoration"><div class="sun">☼</div><div class="login-brand">CLIMA</div><h2>Dados que ajudam<br> a entender o clima.</h2><p>Uma plataforma de apoio à gestão e ao monitoramento de estações meteorológicas.</p><div class="decor-line"></div><small>CONTROLE · MONITORAMENTO · INFORMAÇÃO</small></div>
-          <div class="login-panel"><div class="login-panel-inner"><div class="mobile-brand">☼ CLIMA</div><span class="eyebrow">BEM-VINDO AO SISTEMA</span><h1>Acesse sua conta</h1><p class="muted">Informe seu e-mail e sua senha.</p>
+          
+          <div class="login-panel"><div class="login-panel-inner"><div class="login-brand">CLIMA</div><p class="login-description">Sistema de Controle e Monitoramento do Clima</p><h1>Entrar</h1><p class="muted">Informe seu e-mail e sua senha.</p>
             <form (ngSubmit)="login()" #loginForm="ngForm">
               <label for="email">E-mail</label><input id="email" name="email" type="email" [(ngModel)]="email" placeholder="admin@clima.local" required email autocomplete="username">
               <label for="password">Senha</label><input id="password" name="password" type="password" [(ngModel)]="password" placeholder="Digite sua senha" required autocomplete="current-password">
-              <button class="primary-btn full" type="submit" [disabled]="busy || !loginForm.valid">{{ busy ? 'Entrando...' : 'Entrar no sistema' }} <span>→</span></button>
+              <button class="primary-btn full" type="submit" [disabled]="busy || !loginForm.valid">{{ busy ? 'Entrando...' : 'Entrar' }}</button>
             </form>
             <div class="alert error" *ngIf="errorMessage">{{ errorMessage }}</div><div class="alert success" *ngIf="successMessage">{{ successMessage }}</div>
             
@@ -36,16 +36,15 @@
         </section>
 
         <section class="content" *ngIf="loggedIn && section === 'dashboard'">
-          <div class="welcome-row"><div><h2>Olá, {{ currentUser?.['nome'] || currentEmail }}.</h2><p>Resumo do ambiente de monitoramento.</p></div><span class="status-pill"><span></span> Bem-vindo</span></div>
+          <div class="welcome-row"><div><h2>Resumo</h2><p>Estações, redes e solicitações do seu acesso.</p></div></div>
           <div class="stats-grid">
-            <article class="stat-card"><div class="stat-top"><span>Estações meteorológicas</span><span class="stat-icon blue">⌁</span></div><strong>{{dashboard.estacoes}}</strong><small>Estações cadastradas</small></article>
-            <article class="stat-card"><div class="stat-top"><span>Redes de monitoramento</span><span class="stat-icon green">◉</span></div><strong>{{dashboard.redes}}</strong><small>Redes ativas</small></article>
-            <article class="stat-card"><div class="stat-top"><span>Solicitações pendentes</span><span class="stat-icon orange">▤</span></div><strong>{{dashboard.pendentes}}</strong><small>Solicitações no seu acesso</small></article>
-            <article class="stat-card" *ngIf="isAdmin"><div class="stat-top"><span>Usuários cadastrados</span><span class="stat-icon purple">♙</span></div><strong>{{ userCount === null ? '—' : userCount }}</strong><small>Contas cadastradas</small></article>
+            <article class="stat-card"><div class="stat-top"><span>Estações meteorológicas</span></div><strong>{{dashboard.estacoes}}</strong></article>
+            <article class="stat-card"><div class="stat-top"><span>Redes de monitoramento</span></div><strong>{{dashboard.redes}}</strong></article>
+            <article class="stat-card"><div class="stat-top"><span>Solicitações pendentes</span></div><strong>{{dashboard.pendentes}}</strong></article>
+            <article class="stat-card" *ngIf="isAdmin"><div class="stat-top"><span>Usuários cadastrados</span></div><strong>{{ userCount === null ? '—' : userCount }}</strong></article>
           </div>
           <div class="section-grid">
-            <article class="panel"><div class="panel-heading"><div><h3>O que você deseja fazer?</h3><p>Escolha uma das ações abaixo.</p></div></div><div class="quick-actions"><button class="secondary-btn" *ngIf="isDecisor" (click)="openCadastro('estacoes')">Gerenciar estações</button><button class="secondary-btn" (click)="openSolicitacoes('uso')">Acompanhar uso de estações</button><button class="secondary-btn" (click)="openSolicitacoes('instalacao')">Acompanhar instalações</button><button class="secondary-btn" (click)="section='relatorios'">Consultar relatórios</button></div></article>
-            <article class="panel"><div class="panel-heading"><div><h3>Seu acesso</h3><p>Confira seus dados e perfis de acesso.</p></div><span class="user-icon">♙</span></div><div class="detail-row"><span>Conta</span><strong>{{ currentEmail }}</strong></div><div class="detail-row"><span>Perfil</span><strong>{{ nomesPerfis(roles) }}</strong></div><button class="secondary-btn" (click)="loadMe()">Atualizar perfil ↻</button></article>
+            <article class="panel"><div class="panel-heading"><div><h3>Consultas e cadastros</h3></div></div><div class="quick-actions"><button class="secondary-btn" *ngIf="isDecisor" (click)="openCadastro('estacoes')">Gerenciar estações</button><button class="secondary-btn" (click)="openSolicitacoes('uso')">Acompanhar uso de estações</button><button class="secondary-btn" (click)="openSolicitacoes('instalacao')">Acompanhar instalações</button><button class="secondary-btn" (click)="section='relatorios'">Consultar relatórios</button></div></article>
           </div>
           <div class="alert error" *ngIf="errorMessage">{{ errorMessage }}</div><div class="alert success" *ngIf="successMessage">{{ successMessage }}</div>
         </section>
@@ -99,10 +98,13 @@
           <div class="panel"><div class="table-scroll"><table><thead><tr><th>ESTAÇÃO</th><th>DATA</th><th>STATUS</th><th>DETALHES</th><th>AÇÕES</th></tr></thead><tbody><tr *ngFor="let x of solicitacoesLista"><td>{{nomeEstacao(x['estacao_id'])}}</td><td>{{(x['data_uso'] || x['data_solicitacao']) | date:'dd/MM/yyyy'}}</td><td><span class="status-tag" [class.inactive]="['REPROVADA','INATIVA','CANCELADA'].includes(x.status)">{{rotulo(x.status)}}</span></td><td><div *ngIf="solicitacaoTipo==='uso'">{{x['hora_inicial']?.slice(0,5)}} às {{x['hora_final']?.slice(0,5)}}<br>{{x['nome_usuario']}}</div><div *ngIf="solicitacaoTipo==='instalacao'">{{rotulo(x['item_tipo'])}}: {{x['nome_software'] || rotulo(x['sensor'])}}</div><small *ngIf="x['justificativa_reprovacao']">Justificativa: {{x['justificativa_reprovacao']}}</small><small *ngIf="x['justificativa_inativacao']">Motivo: {{x['justificativa_inativacao']}}</small></td><td><ng-container *ngIf="x.status==='PENDENTE' && (x['usuario_solicitante_id'] || x['solicitante_id'])===perfilFinal[0]?.id"><button class="secondary-btn compact" (click)="editarSolicitacao(x)">Editar</button> <button class="secondary-btn compact" (click)="inativarSolicitacao(x)">Inativar</button></ng-container><ng-container *ngIf="isDecisor && x.status==='PENDENTE'"><button class="secondary-btn compact" (click)="decidir(x,'APROVADA')">Aprovar</button> <button class="secondary-btn compact" (click)="decidir(x,'REPROVADA')">Reprovar</button></ng-container><button class="secondary-btn compact" *ngIf="solicitacaoTipo==='uso' && x.status==='APROVADA' && x['usuario_solicitante_id']===perfilFinal[0]?.id" (click)="liberarReserva(x)">Liberar estação</button><button class="secondary-btn compact" *ngIf="isDecisor && solicitacaoTipo==='instalacao' && x.status==='APROVADA'" (click)="decidir(x,'INSTALADA')">Marcar instalada</button></td></tr><tr *ngIf="!solicitacoesLista.length"><td colspan="5" class="empty">Nenhuma solicitação encontrada.</td></tr></tbody></table></div></div>
           <div class="alert error" *ngIf="errorMessage">{{errorMessage}}</div><div class="alert success" *ngIf="successMessage">{{successMessage}}</div>
         </section>
-        <section class="content" *ngIf="loggedIn && section==='relatorios'"><h2>Exportação de relatórios</h2><p>Escolha um assunto e baixe o relatório no formato desejado.</p><div class="panel"><div class="form-grid"><ng-container *ngFor="let r of relatorios"><button class="secondary-btn" (click)="baixarRelatorio(r,'csv')">{{rotulo(r)}} · Planilha (CSV)</button><button class="secondary-btn" (click)="baixarRelatorio(r,'pdf')">{{rotulo(r)}} · Documento (PDF)</button></ng-container></div></div><div class="alert error" *ngIf="errorMessage">{{errorMessage}}</div></section>
+        <section class="content" *ngIf="loggedIn && section==='relatorios'"><h2>Relatórios</h2><p>Escolha um assunto e baixe o relatório no formato desejado.</p><div class="panel"><div class="form-grid"><ng-container *ngFor="let r of relatorios"><button class="secondary-btn" (click)="baixarRelatorio(r,'csv')">{{rotulo(r)}} · Planilha (CSV)</button><button class="secondary-btn" (click)="baixarRelatorio(r,'pdf')">{{rotulo(r)}} · Documento (PDF)</button></ng-container></div></div><div class="alert error" *ngIf="errorMessage">{{errorMessage}}</div></section>
         <section class="content" *ngIf="loggedIn && section==='auditoria'"><h2>Histórico de atividades</h2><div class="panel table-scroll"><table><thead><tr><th>Data</th><th>Responsável</th><th>Ação</th><th>Entidade</th></tr></thead><tbody><tr *ngFor="let a of auditoria"><td>{{a['data_hora'] | date:'dd/MM/yyyy HH:mm'}}</td><td>{{a['responsavel'] || 'Registro automático'}}</td><td>{{rotulo(a['acao'])}}</td><td>{{rotulo(a['entidade'])}}</td></tr></tbody></table><button class="secondary-btn" (click)="auditPage=auditPage>0?auditPage-1:0; loadAudit()">Anterior</button><button class="secondary-btn" (click)="auditPage=auditPage+1; loadAudit()">Próxima</button></div></section>
-        <footer class="footer" *ngIf="loggedIn">Sistema de Controle e Monitoramento do Clima <span>•</span> Monitoramento climático</footer>
+        <footer class="footer" *ngIf="loggedIn">Sistema de Controle e Monitoramento do Clima</footer>
       </main>
     </div>
 <div class="dialog-overlay" *ngIf="dialog" (click)="fecharDialog(null)"><section class="dialog-card" role="dialog" aria-modal="true" aria-labelledby="dialogTitle" (click)="$event.stopPropagation()"><form class="user-form" (ngSubmit)="fecharDialog(dialog.comMotivo ? dialogTexto : 'confirmado')"><h2 id="dialogTitle">{{dialog.titulo}}</h2><p>{{dialog.mensagem}}</p><label for="dialogReason" *ngIf="dialog.comMotivo">{{dialog.rotulo || 'Motivo'}} *</label><textarea id="dialogReason" name="motivo" *ngIf="dialog.comMotivo" [(ngModel)]="dialogTexto" required rows="4" placeholder="Descreva o motivo"></textarea><div class="dialog-actions"><button class="secondary-btn" type="button" (click)="fecharDialog(null)">Cancelar</button><button class="primary-btn" type="submit" [disabled]="dialog.comMotivo && !dialogTexto.trim()">{{dialog.acao}}</button></div></form></section></div>
 <div class="dialog-overlay" *ngIf="orgaoCoordenadorias"><section class="dialog-card" role="dialog" aria-modal="true" aria-labelledby="coordTitle"><h2 id="coordTitle">Coordenadorias de {{orgaoCoordenadorias['sigla']}}</h2><p>Cadastre os setores e as pessoas nomeadas.</p><div class="coord-list"><div *ngFor="let c of listaCoordenadorias"><span><strong>{{c['nome']}}</strong><small>{{c['nomeado']}}</small></span><button class="secondary-btn compact" (click)="coordForm={id:c.id,nome:c['nome'],nomeado:c['nomeado']}">Editar</button></div><p *ngIf="!listaCoordenadorias.length">Nenhuma coordenadoria cadastrada.</p></div><form class="user-form" (ngSubmit)="salvarCoordenadoria()" #coordNgForm="ngForm"><label for="coordNome">Nome da coordenadoria *</label><input id="coordNome" name="coordNome" [(ngModel)]="coordForm.nome" maxlength="160" required><label for="coordPessoa">Pessoa nomeada *</label><input id="coordPessoa" name="coordPessoa" [(ngModel)]="coordForm.nomeado" maxlength="180" required><div class="dialog-actions"><button class="secondary-btn" type="button" (click)="orgaoCoordenadorias=null">Fechar</button><button class="secondary-btn" type="button" *ngIf="coordForm.id" (click)="coordForm={id:'',nome:'',nomeado:''}">Novo setor</button><button class="primary-btn" [disabled]="busy || !coordNgForm.valid">Salvar coordenadoria</button></div><div class="alert error" *ngIf="coordErro">{{coordErro}}</div></form></section></div>
+
+
+

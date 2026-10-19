@@ -1,34 +1,59 @@
 # Sistema de Controle e Monitoramento do Clima
 
-## Requisitos
+## Como rodar no VS Code
 
-Java 21, Maven, Node.js com npm e PostgreSQL instalados.
+### 1. Abrir o projeto
 
-## Como executar
+Baixe e extraia o projeto. No VS Code, selecione **Arquivo > Abrir Pasta** e abra a pasta que contém o arquivo `pom.xml`.
 
-Abra o PowerShell na pasta do projeto.
+### 2. Configurar na primeira execução
 
-Na primeira configuração, crie o banco `clima` no PostgreSQL e execute:
+No PostgreSQL, crie um banco vazio chamado `clima`.
 
-```powershell
-.\configurar-windows.ps1
-```
-
-Se o arquivo `.config-local.json` já existir, mantenha-o e pule essa etapa.
-
-Para iniciar o backend:
+No VS Code, abra **Terminal > Novo Terminal**, selecione **PowerShell** e execute:
 
 ```powershell
-.\iniciar-backend.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\configurar-windows.ps1
 ```
 
-Em outro PowerShell, na mesma pasta, inicie o frontend:
+Informe o usuário e a senha do PostgreSQL, o e-mail e a senha inicial do administrador.
+
+Se o projeto já estiver configurado nessa máquina e o arquivo `.config-local.json` existir, pule esta etapa. Não recrie o banco nem substitua a configuração existente.
+
+### 3. Iniciar o backend
+
+No terminal do VS Code, execute:
 
 ```powershell
-.\iniciar-frontend.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\iniciar-backend.ps1
 ```
 
-Acesse http://localhost:4200 e entre com o usuário configurado.
-Mantenha os dois terminais abertos. Para encerrar, pressione Ctrl+C em cada um.
+Aguarde a mensagem de que a aplicação iniciou. Na primeira execução em um banco novo, as tabelas e os dados iniciais são criados automaticamente.
 
-Os cadastros ficam no PostgreSQL. O arquivo `.config-local.json` contém a configuração local e não deve ser compartilhado na entrega.
+### 4. Iniciar a interface
+
+Clique no botão **+** do painel de terminal para abrir outro PowerShell na mesma pasta, mantendo o backend aberto. Execute:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\iniciar-frontend.ps1
+```
+
+A primeira execução instala as dependências e compila a interface. Nas próximas aberturas, a compilação é reutilizada enquanto o código não mudar.
+
+### 5. Acessar e encerrar
+
+Abra **http://localhost:4200** no navegador e entre com o administrador definido na configuração. Os outros usuários são cadastrados pelo administrador.
+
+Mantenha os dois terminais abertos durante o uso. Para encerrar, pressione **Ctrl+C** em cada terminal.
+
+### Depois de alterar o código
+
+Encerre e execute novamente o iniciador da parte alterada. Ele identifica as mudanças e recompila quando necessário. Atualize o navegador com **Ctrl+F5**.
+
+Para editar a interface com atualização automática, use este comando no lugar do iniciador normal do frontend:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\iniciar-frontend.ps1 -Desenvolvimento
+```
+
+Os dados ficam no PostgreSQL. O arquivo `.config-local.json` é exclusivo da máquina e não deve ser enviado ao GitHub.
